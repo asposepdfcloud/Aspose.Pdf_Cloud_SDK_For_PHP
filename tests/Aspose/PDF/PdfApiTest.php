@@ -232,5 +232,228 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
         $result = $this->pdf->GetWordsPerPage($name="Test.pdf", $storage = null, $folder = null);         
         $this->assertEquals(200, $result->Code);
     }
+    
+    public function testPostDocumentReplaceText()
+    {
+        $body = array("OldValue" => "sample", "NewValue" => "demo", "Regex" => "false");
+        $result = $this->pdf->PostDocumentReplaceText($name="Test.pdf", $storage = null, $folder = null, $body);         
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostDocumentReplaceTextList()
+    {        
+        $body = array('TextReplaces'=>array(array('OldValue'=>"sample", 'NewValue'=>"demo", 'Regex'=>'false'),
+	array('OldValue'=>"document", 'NewValue'=>"page", 'Regex'=>'false')));
+        $result = $this->pdf->PostDocumentReplaceTextList($name="Test.pdf", $storage = null, $folder = null, $body);         
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostMovePage()
+    {
+        $result = $this->pdf->PostMovePage($name="Test.pdf", $pageNumber=1, $newIndex=2, $storage = null, $folder = null);                 
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostPageReplaceText()
+    {
+        $body = array("OldValue" => "sample", "NewValue" => "demo", "Regex" => "false");
+        $result = $this->pdf->PostPageReplaceText($name="Test.pdf", $pageNumber=1, $storage = null, $folder = null, $body);         
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostPageReplaceTextList()
+    {        
+        $body = array('TextReplaces'=>array(array('OldValue'=>"sample", 'NewValue'=>"demo", 'Regex'=>'false'),
+	array('OldValue'=>"document", 'NewValue'=>"page", 'Regex'=>'false')));
+        $result = $this->pdf->PostPageReplaceTextList($name="Test.pdf", $pageNumber=1, $storage = null, $folder = null, $body);         
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostReplaceImage()
+    {
+        $file = getcwd() . '/Data/Input/barcode.png';
+        $result = $this->pdf->PostReplaceImage($name="Test.pdf", $pageNumber=1, $imageNumber=1, $imageFile = null, $storage = null, $folder = null, $file);                 
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostSignDocument()
+    {
+        $body = '{
+                    "SignaturePath": "temp.pfx",
+                    "SignatureType": "PKCS7",
+                    "Password": "password",
+                    "Reason": "Success",
+                    "Contact": "test@mail.ru",
+                    "Location": "Ukraine",
+                    "Visible": true,
+                    "Rectangle": {
+                      "X": 100,
+                      "Y": 100,
+                      "Width": 400,
+                      "Height": 100
+                    },
+                    "FormFieldName": "Signature2",
+                    "Authority": "Sergey Smal",
+                    "Date": "1-1-2015"
+                  }';
+        $result = $this->pdf->PostSignDocument($name="signature.pdf", $storage = null, $folder = null, $body);         
+        $result = json_decode($result);
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostSignPage()
+    {
+        $body = '{
+                    "SignaturePath": "temp.pfx",
+                    "SignatureType": "PKCS7",
+                    "Password": "password",
+                    "Reason": "Success",
+                    "Contact": "test@mail.ru",
+                    "Location": "Ukraine",
+                    "Visible": true,
+                    "Rectangle": {
+                      "X": 100,
+                      "Y": 100,
+                      "Width": 400,
+                      "Height": 100
+                    },
+                    "FormFieldName": "Signature2",
+                    "Authority": "Sergey Smal",
+                    "Date": "1-1-2015"
+                  }';
+        $result = $this->pdf->PostSignPage($name="signature.pdf", $pageNumber=1, $storage = null, $folder = null, $body);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostSplitDocument()
+    {
+        $result = $this->pdf->PostSplitDocument($name="Test.pdf", $format = null, $from = null, $to = null, $storage = null, $folder = null);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPutAddNewPage()
+    {
+        $result = $this->pdf->PutAddNewPage($name="Test.pdf", $storage = null, $folder = null);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPutConvertDocument()
+    {
+        $file = getcwd(). '/Data/Input/Test.pdf';
+        $result = $this->pdf->PutConvertDocument($format = "tiff", $url = null, $outPath = null, $file);        
+        $fh = fopen(getcwd(). '/Data/Output/Test.tiff', 'w');
+        fwrite($fh, $result);
+        fclose($fh);
+        $this->assertFileExists(getcwd(). '/Data/Output/Test.tiff');
+    }
+    
+    /*public function testPutCreateDocument()
+    {
+        $file = getcwd(). '/Data/Input/Test.pdf';
+        $result = $this->pdf->PutCreateDocument($name, $templateFile = null, $dataFile = null, $templateType = null, $storage = null, $folder = null);        
+        $fh = fopen(getcwd(). '/Data/Output/Test.tiff', 'w');
+        fwrite($fh, $result);
+        fclose($fh);
+        $this->assertFileExists(getcwd(). '/Data/Output/Test.tiff');
+    }*/
+    
+    public function testPutDocumentSaveAsTiff()
+    {
+        $body = '{
+                    "Brightness": 0,
+                    "Compression": "",
+                    "ColorDepth": "",
+                    "LeftMargin": 0,
+                    "RightMargin": 0,
+                    "TopMargin": 0,
+                    "BottomMargin": 0,
+                    "Orientation": "",
+                    "SkipBlankPages": true,
+                    "Width": 600,
+                    "Height": 400,
+                    "XResolution": 0,
+                    "YResolution": 0,
+                    "PageIndex": 0,
+                    "PageCount": 0,
+                    "ResultFile": ""
+                 }';
+        $result = $this->pdf->PutDocumentSaveAsTiff($name="Test.pdf", $resultFile = "Test.tiff", $brightness = null, $compression = null, $colorDepth = null, $leftMargin = null, $rightMargin = null, $topMargin = null, $bottomMargin = null, $orientation = null, $skipBlankPages = null, $width = null, $height = null, $xResolution = null, $yResolution = null, $pageIndex = null, $pageCount = null, $storage = null, $folder = null, $body);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPutMergeDocuments()
+    {        
+        $body = array('List'=> array('index.pdf', 'Output.pdf'));
+        $result = $this->pdf->PutMergeDocuments($name="Test.pdf", $storage = null, $folder = null, $body);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPutPageAddStamp()
+    {        
+        $body = '{
+                        "Type": 0,
+                        "Background": true,
+                        "BottomMargin": 2.0,
+                        "HorizontalAlignment": 1,
+                        "LeftMargin": 3.0,
+                        "Opacity": 0.5,
+                        "RightMargin": 0.0,
+                        "Rotate": 3,
+                        "RotateAngle": 45.0,
+                        "TopMargin": 4.0,
+                        "VerticalAlignment": 3,
+                        "XIndent": 2.0,
+                        "YIndent": 2.5,
+                        "Zoom": 1.5,
+                        "TextAlignment": 0,
+                        "Value": "STAMP TEXT HERE",
+                        "TextState": {
+                          "FontSize": 14.0,
+                          "Font": "Arial",
+                          "ForegroundColor": {
+                            "A": 0,
+                            "R": 255,
+                            "G": 0,
+                            "B": 0
+                          },
+                          "BackgroundColor": {
+                            "A": 0,
+                            "R": 0,
+                            "G": 0,
+                            "B": 255
+                          },
+                          "FontStyle": 2
+                        },
+                        "FileName": null,
+                        "Width": 0.0,
+                        "Height": 0.0,
+                        "PageIndex": 0,
+                        "StartingNumber": 0
+                      }';
+
+        $result = $this->pdf->PutPageAddStamp($name="index.pdf", $pageNumber=1, $storage = null, $folder = null, $body);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPutSetProperty()
+    {        
+        $body = array('Value'=> 'Mike');
+        $result = $this->pdf->PutSetProperty($name="Test.pdf", $propertyName="Author", $storage = null, $folder = null, $body);        
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPutUpdateField()
+    {        
+        $body = array("Name" => "ms", "Type" => "2", "Values" => array("1"));
+        $result = $this->pdf->PutUpdateField($name="complaintform.pdf", $storage = null, $folder = null, $fieldName="ms", $body);                
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    /*public function testPutUpdateFields()
+    {        
+        $body = array("List" => array("Name" => "first", "Type" => "0", "Values" => array("John")));
+        $result = $this->pdf->PutUpdateFields($name="complaintform.pdf", $storage = null, $folder = null, $body);                
+        $this->assertEquals(200, $result->Code);
+    }*/
                         
 }    
