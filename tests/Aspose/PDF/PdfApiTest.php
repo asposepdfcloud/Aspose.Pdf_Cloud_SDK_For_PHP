@@ -35,16 +35,15 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(200, $result->Code);
     }
     
-    /*public function testGetDocumentAttachmentByIndex()
+    public function testGetDocumentAttachmentByIndex()
     {        
-        $result = $this->pdf->GetDocumentAttachmentByIndex($name="attachment.pdf", $attachmentIndex=1, $storage = null, $folder = null);
-        print_r($result);
-        //$this->assertEquals(200, $result->Code);
-    }*/
+        $result = $this->pdf->GetDocumentAttachmentByIndex($name="test_attachment.pdf", $attachmentIndex=1, $storage = null, $folder = null);        
+        $this->assertEquals(200, $result->Code);
+    }
     
     public function testGetDocumentAttachments()
     {        
-        $result = $this->pdf->GetDocumentAttachments($name="attachment.pdf", $storage = null, $folder = null);
+        $result = $this->pdf->GetDocumentAttachments($name="test_attachment.pdf", $storage = null, $folder = null);
         $this->assertEquals(200, $result->Code);
     }
     
@@ -54,12 +53,11 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(200, $result->Code);
     }
     
-    /*public function testGetDocumentBookmarksChildren()
+    public function testGetDocumentBookmarksChildren()
     {        
-        $result = $this->pdf->GetDocumentBookmarksChildren($name="Test.pdf", $bookmarkPath = 1, $storage = null, $folder = null);
-        print_r($result); exit;
+        $result = $this->pdf->GetDocumentBookmarksChildren($name="Test.pdf", $bookmarkPath = "1", $storage = null, $folder = null);        
         $this->assertEquals(200, $result->Code);
-    }*/
+    }
     
     public function testGetDocumentProperties()
     {        
@@ -163,12 +161,6 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(200, $result->Code);
     }
     
-    public function testGetPageAnnotations()
-    {        
-        $result = $this->pdf->GetPageAnnotations($name="test_annotation.pdf", $pageNumber=1, $storage = null, $folder = null);        
-        $this->assertEquals(200, $result->Code);
-    }
-    
     public function testGetPageLinkAnnotationByIndex()
     {        
         $result = $this->pdf->GetPageLinkAnnotationByIndex($name="test_annotation.pdf", $pageNumber=1, $linkIndex=1, $storage = null, $folder = null);        
@@ -230,6 +222,43 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
     public function testGetWordsPerPage()
     {        
         $result = $this->pdf->GetWordsPerPage($name="Test.pdf", $storage = null, $folder = null);         
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostAppendDocument()
+    {        
+        $body = array("Document"=>"Test.pdf");
+        $result = $this->pdf->PostAppendDocument($name="Output.pdf", $appendFile = null, $startPage = null, $endPage = null, $storage = null, $folder = null, $body);         
+        $this->assertEquals(200, $result->Code);
+    }
+    
+    public function testPostCreateField()
+    {        
+        $body = '{
+                    "Name": "ms",
+                    "Type": "Boolean",
+                    "Values": [
+                      "1"
+                    ],
+                    "SelectedItems": [
+                      0
+                    ],
+                    "Rect": {
+                      "X": 0,
+                      "Y": 0,
+                      "Width": 0,
+                      "Height": 0
+                    },
+                    "Links": [
+                      {
+                        "Href": "string",
+                        "Rel": "string",
+                        "Type": "string",
+                        "Title": "string"
+                      }
+                    ]
+                  }';
+        $result = $this->pdf->PostCreateField($name="complaintform.pdf", $page=1, $storage = null, $folder = null, $body);         
         $this->assertEquals(200, $result->Code);
     }
     
@@ -347,15 +376,11 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
         $this->assertFileExists(getcwd(). '/Data/Output/Test.tiff');
     }
     
-    /*public function testPutCreateDocument()
+    public function testPutCreateDocument()
     {
-        $file = getcwd(). '/Data/Input/Test.pdf';
-        $result = $this->pdf->PutCreateDocument($name, $templateFile = null, $dataFile = null, $templateType = null, $storage = null, $folder = null);        
-        $fh = fopen(getcwd(). '/Data/Output/Test.tiff', 'w');
-        fwrite($fh, $result);
-        fclose($fh);
-        $this->assertFileExists(getcwd(). '/Data/Output/Test.tiff');
-    }*/
+        $result = $this->pdf->PutCreateDocument($name="create.pdf", $templateFile = null, $dataFile = null, $templateType = null, $storage = null, $folder = null);        
+        $this->assertEquals(200, $result->Code);
+    }
     
     public function testPutDocumentSaveAsTiff()
     {
@@ -449,11 +474,41 @@ class PdfApiTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(200, $result->Code);
     }
     
-    /*public function testPutUpdateFields()
+    public function testPutUpdateFields()
     {        
-        $body = array("List" => array("Name" => "first", "Type" => "0", "Values" => array("John")));
+        $body = '{
+                    "List": [
+                      {
+                        "Name": "first",
+                        "Type": "0",
+                        "Values": [
+                          "John"
+                        ],
+                        "SelectedItems": [
+                          0
+                        ],
+                        "Rect": {
+                          "X": 0,
+                          "Y": 0,
+                          "Width": 0,
+                          "Height": 0
+                        },
+                        "Links": [
+                          {
+                            "Href": "string",
+                            "Rel": "string",
+                            "Type": "string",
+                            "Title": "string"
+                          }
+                        ]
+                      }
+                    ],
+                    "Links": [
+                      "Aspose.Platform.Common.Business.DTO.Link"
+                    ]
+                  }';
         $result = $this->pdf->PutUpdateFields($name="complaintform.pdf", $storage = null, $folder = null, $body);                
         $this->assertEquals(200, $result->Code);
-    }*/
+    }
                         
 }    
